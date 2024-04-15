@@ -18,7 +18,9 @@ from django.contrib import admin
 from django.urls import path
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
 
-from backend_auth.tickets.TicketCreateView import TicketListView, TicketCreateView, MessageCreateView
+from backend_auth.authorization.views import LoginView, RegisterView
+from backend_auth.tickets.TicketCreateView import TicketListView, TicketCreateView, MessageCreateView, TicketDetailView, \
+    MessageListView
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -26,5 +28,9 @@ urlpatterns = [
     path('api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
     path('tickets/', TicketListView.as_view(), name='ticket-list'),
     path('tickets/create/', TicketCreateView.as_view(), name='ticket-create'),
+    path('tickets/<int:pk>/', TicketDetailView.as_view(), name='ticket-detail'),
     path('messages/create/', MessageCreateView.as_view(), name='message-create'),
+    path('tickets/<int:ticket_id>/messages/', MessageListView.as_view(), name='message-list'),
+    path('register/', RegisterView.as_view(), name='register'),
+    path('login/', LoginView.as_view(), name='login'),
 ]
