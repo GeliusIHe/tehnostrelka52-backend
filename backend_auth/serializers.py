@@ -5,7 +5,12 @@ from .models import Ticket, Message
 class TicketSerializer(serializers.ModelSerializer):
     class Meta:
         model = Ticket
-        fields = '__all__'
+        fields = ['id', 'title', 'description', 'status', 'created_at', 'updated_at', 'user']
+        read_only_fields = ['user']
+
+    def create(self, validated_data):
+        validated_data['user'] = self.context['request'].user
+        return super().create(validated_data)
 
 
 class MessageSerializer(serializers.ModelSerializer):
