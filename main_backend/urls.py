@@ -21,6 +21,7 @@ from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
 from backend_auth.authorization.views import LoginView, RegisterView
 from backend_auth.tickets.views import TicketListView, TicketCreateView, MessageCreateView, TicketDetailView, \
     MessageListView
+from telegram_integration.views import generate_telegram_link
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -33,4 +34,5 @@ urlpatterns = [
     path('tickets/<int:ticket_id>/messages/', MessageListView.as_view(), name='message-list'),
     path('register/', RegisterView.as_view(), name='register'),
     path('login/', LoginView.as_view(), name='login'),
+    path('generate_link/', generate_telegram_link, name='generate_telegram_link'),
 ]

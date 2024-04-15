@@ -1,10 +1,14 @@
+import uuid
 from django.db import models
 from django.contrib.auth.models import User
+from django.utils import timezone
+from datetime import timedelta
 
 class TelegramLink(models.Model):
-    user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='telegram_link')
-    uuid = models.UUIDField(unique=True, db_index=True)
-    telegram_id = models.CharField(max_length=128, unique=True, null=True, blank=True)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    code = models.UUIDField(default=uuid.uuid4, editable=False, unique=True)
+    timestamp = models.DateTimeField(auto_now_add=True)
 
-    def __str__(self):
-        return f"User {self.user.username} linked with UUID {self.uuid}"
+    def is_valid(self):
+        # Время жизни кода 10 минут
+        return timezone.now() - self.timestamp < timedelta(minutes=10)

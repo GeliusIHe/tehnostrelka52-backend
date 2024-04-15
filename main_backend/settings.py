@@ -36,6 +36,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'backend_auth',
     'channels',
+    'telegram_integration',
     'corsheaders',
 ]
 ASGI_APPLICATION = 'main_backend.asgi.application'
