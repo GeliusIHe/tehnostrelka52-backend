@@ -19,7 +19,7 @@ from django.urls import path
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
 
 from backend_auth.authorization.views import LoginView, RegisterView
-from backend_auth.tickets.TicketCreateView import TicketListView, TicketCreateView, MessageCreateView, TicketDetailView, \
+from backend_auth.tickets.views import TicketListView, TicketCreateView, MessageCreateView, TicketDetailView, \
     MessageListView
 
 urlpatterns = [

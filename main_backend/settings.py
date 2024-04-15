@@ -27,9 +27,6 @@ DEBUG = True
 
 ALLOWED_HOSTS = ['*']
 
-
-# Application definition
-
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
@@ -38,8 +35,10 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'backend_auth',
+    'channels',
     'corsheaders',
 ]
+ASGI_APPLICATION = 'main_backend.asgi.application'
 
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
@@ -47,6 +46,14 @@ REST_FRAMEWORK = {
     ),
 }
 
+CHANNEL_LAYERS = {
+    'default': {
+        'BACKEND': 'channels_redis.core.RedisChannelLayer',
+        'CONFIG': {
+            "hosts": [('127.0.0.1', 6379)],
+        },
+    },
+}
 
 MIDDLEWARE = [
     'corsheaders.middleware.CorsMiddleware',

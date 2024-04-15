@@ -36,7 +36,12 @@ class MessageCreateView(generics.CreateAPIView):
     permission_classes = [permissions.IsAuthenticated]
 
     def perform_create(self, serializer):
-        serializer.save(user=self.request.user, status='pending')
+        message = serializer.save(user=self.request.user, status='pending')
+
+        if self.request.user.profile.role.name == 'support':
+            ticket = message.ticket
+            ticket.status = 'pending'
+            ticket.save()
 
 
 class MessageListView(generics.ListAPIView):
