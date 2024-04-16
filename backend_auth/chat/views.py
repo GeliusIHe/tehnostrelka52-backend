@@ -5,6 +5,8 @@ from rest_framework_simplejwt.authentication import JWTAuthentication
 from rest_framework_simplejwt.exceptions import InvalidToken, TokenError
 from openai import OpenAI
 
+from backend_auth.models import Ticket
+
 
 class ChatInitView(APIView):
     authentication_classes = []
@@ -32,6 +34,12 @@ class ChatInitView(APIView):
         user_input = request.data.get('message')
         if not user_input:
             return JsonResponse({'error': 'Message content is required'}, status=status.HTTP_400_BAD_REQUEST)
+
+        if user_input.lower() == "оператор":
+            ticket = Ticket.objects.create(user=request.user)
+            return JsonResponse(
+                {'message': f'Ticket {ticket.id} created successfully. A support staff will be with you shortly.'},
+                status=status.HTTP_201_CREATED)
 
         client = OpenAI(api_key='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')
 
