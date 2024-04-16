@@ -1,6 +1,9 @@
+from mypy.typeshed.stdlib.msilib.schema import Media
 from rest_framework import generics, permissions
+from rest_framework.permissions import IsAuthenticated
+
 from backend_auth.models import Ticket, Message
-from backend_auth.serializers import TicketSerializer, MessageSerializer
+from backend_auth.serializers import TicketSerializer, MessageSerializer, MediaSerializer
 from backend_auth.permissions import IsOwnerOrIsSupportStaff
 from telegram_integration.models import TelegramLink
 import telebot
@@ -66,3 +69,12 @@ class MessageListView(generics.ListAPIView):
     def get_queryset(self):
         ticket_id = self.kwargs.get('ticket_id')
         return Message.objects.filter(ticket_id=ticket_id)
+
+
+class MediaUploadView(generics.CreateAPIView):
+    queryset = Media.objects.all()
+    serializer_class = MediaSerializer
+    permission_classes = [IsAuthenticated]
+
+    def perform_create(self, serializer):
+        serializer.save()

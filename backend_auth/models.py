@@ -36,3 +36,12 @@ class Message(models.Model):
     author = models.ForeignKey(User, related_name='messages', on_delete=models.CASCADE)
     text = models.TextField()
     timestamp = models.DateTimeField(auto_now_add=True)
+
+
+class Media(models.Model):
+    message = models.ForeignKey('Message', related_name='media', on_delete=models.CASCADE)
+    file = models.FileField(upload_to='media_files/')
+    uploaded_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"Media for message {self.message.id} uploaded at {self.uploaded_at}"

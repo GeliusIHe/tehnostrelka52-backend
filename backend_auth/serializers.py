@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Ticket, Message
+from .models import Ticket, Message, Media
 
 
 class TicketSerializer(serializers.ModelSerializer):
@@ -25,3 +25,9 @@ class MessageSerializer(serializers.ModelSerializer):
         if hasattr(obj.author, 'profile'):
             return obj.author.profile.role.name
         return None
+
+
+class MediaSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Media
+        fields = ['id', 'file', 'message', 'uploaded_at']
