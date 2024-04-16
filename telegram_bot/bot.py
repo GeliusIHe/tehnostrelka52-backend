@@ -29,7 +29,7 @@ def send_welcome(message):
     args = message.text.split(maxsplit=1)
     if len(args) > 1:
         code = args[1]
-        api_url = 'http://localhost:8000/api/link_telegram/'
+        api_url = 'http://localhost:30183/api/link_telegram/'
         response = requests.post(api_url, json={'code': code, 'chat_id': message.chat.id})
         if response.status_code == 200:
             bot.reply_to(message, "Ваш аккаунт был успешно привязан")
