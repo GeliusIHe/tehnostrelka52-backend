@@ -1,8 +1,6 @@
 from rest_framework import serializers
-from rest_framework.permissions import IsAuthenticated
 
 from .models import Ticket, Message, Media
-from rest_framework import generics
 
 
 class TicketSerializer(serializers.ModelSerializer):

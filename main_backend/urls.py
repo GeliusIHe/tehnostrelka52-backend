@@ -20,9 +20,8 @@ from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
 
 from backend_auth.authorization.views import LoginView, RegisterView
 from backend_auth.chat.views import ChatInitView
-from backend_auth.serializers import MediaListView, MediaRetrieveView
 from backend_auth.tickets.views import TicketListView, TicketCreateView, MessageCreateView, TicketDetailView, \
-    MessageListView, MediaUploadView
+    MediaUploadView, MessageListView, MediaListView, MediaRetrieveView
 from telegram_integration.views import generate_telegram_link, LinkTelegramAccount
 from django.conf.urls.static import static
 from django.conf import settings
