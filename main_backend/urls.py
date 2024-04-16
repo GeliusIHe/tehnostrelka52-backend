@@ -19,6 +19,7 @@ from django.urls import path
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
 
 from backend_auth.authorization.views import LoginView, RegisterView
+from backend_auth.chat.views import ChatInitView
 from backend_auth.tickets.views import TicketListView, TicketCreateView, MessageCreateView, TicketDetailView, \
     MessageListView
 from telegram_integration.views import generate_telegram_link
@@ -35,4 +36,5 @@ urlpatterns = [
     path('register/', RegisterView.as_view(), name='register'),
     path('login/', LoginView.as_view(), name='login'),
     path('generate_link/', generate_telegram_link, name='generate_telegram_link'),
+    path('chat/init/', ChatInitView.as_view(), name='chat-init'),
 ]
