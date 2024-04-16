@@ -39,9 +39,10 @@ class Message(models.Model):
 
 
 class Media(models.Model):
-    message = models.ForeignKey('Message', related_name='media', on_delete=models.CASCADE)
-    file = models.FileField(upload_to='media_files/')
+    ticket = models.ForeignKey('Ticket', related_name='media', on_delete=models.CASCADE)
+    file = models.FileField(upload_to='chat_files/')
     uploaded_at = models.DateTimeField(auto_now_add=True)
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='uploaded_files')
 
     def __str__(self):
-        return f"Media for message {self.message.id} uploaded at {self.uploaded_at}"
+        return f"Media file {self.file.name} uploaded at {self.uploaded_at} for ticket {self.ticket.id}"

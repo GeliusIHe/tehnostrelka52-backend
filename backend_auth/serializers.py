@@ -31,4 +31,4 @@ class MessageSerializer(serializers.ModelSerializer):
 class MediaSerializer(serializers.ModelSerializer):
     class Meta:
         model = Media
-        fields = ['id', 'file', 'message', 'uploaded_at']
+        fields = ['id', 'file', 'uploaded_at', 'ticket', 'user']
