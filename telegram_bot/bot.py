@@ -1,7 +1,6 @@
+import psycopg2
 import requests
 import telebot
-import psycopg2
-from datetime import datetime, timedelta
 
 TOKEN = '7046099150:AAE39SRoCZ6NzOS0cQs-UbC2S7p2J03J3mA'
 
@@ -33,10 +32,11 @@ def send_welcome(message):
         api_url = 'http://localhost:8000/api/link_telegram/'
         response = requests.post(api_url, json={'code': code, 'chat_id': message.chat.id})
         if response.status_code == 200:
-            bot.reply_to(message, "Your account has been successfully linked.")
+            bot.reply_to(message, "Ваш аккаунт был успешно привязан")
         else:
-            bot.reply_to(message, response.json().get('error', 'An error occurred during account linking.'))
+            bot.reply_to(message, response.json().get('error', 'Произошла ошибка при попытке привязать аккаунт.'))
     else:
-        bot.reply_to(message, "Please send the command in format: /start your_code")
+        bot.reply_to(message, "Пожалуйста, введите команду в формате /start <Код>")
+
 
 bot.infinity_polling()
