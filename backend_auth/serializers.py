@@ -1,5 +1,8 @@
 from rest_framework import serializers
+from rest_framework.permissions import IsAuthenticated
+
 from .models import Ticket, Message, Media
+from rest_framework import generics
 
 
 class TicketSerializer(serializers.ModelSerializer):
@@ -31,3 +34,15 @@ class MediaSerializer(serializers.ModelSerializer):
     class Meta:
         model = Media
         fields = ['id', 'file', 'message', 'uploaded_at']
+
+
+class MediaListView(generics.ListAPIView):
+    queryset = Media.objects.all()
+    serializer_class = MediaSerializer
+    permission_classes = [IsAuthenticated]
+
+
+class MediaRetrieveView(generics.RetrieveAPIView):
+    queryset = Media.objects.all()
+    serializer_class = MediaSerializer
+    permission_classes = [IsAuthenticated]

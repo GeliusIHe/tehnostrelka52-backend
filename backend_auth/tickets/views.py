@@ -1,8 +1,7 @@
-from mypy.typeshed.stdlib.msilib.schema import Media
 from rest_framework import generics, permissions
 from rest_framework.permissions import IsAuthenticated
 
-from backend_auth.models import Ticket, Message
+from backend_auth.models import Ticket, Message, Media
 from backend_auth.serializers import TicketSerializer, MessageSerializer, MediaSerializer
 from backend_auth.permissions import IsOwnerOrIsSupportStaff
 from telegram_integration.models import TelegramLink

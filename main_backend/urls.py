@@ -20,9 +20,12 @@ from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
 
 from backend_auth.authorization.views import LoginView, RegisterView
 from backend_auth.chat.views import ChatInitView
+from backend_auth.serializers import MediaListView, MediaRetrieveView
 from backend_auth.tickets.views import TicketListView, TicketCreateView, MessageCreateView, TicketDetailView, \
     MessageListView, MediaUploadView
 from telegram_integration.views import generate_telegram_link, LinkTelegramAccount
+from django.conf.urls.static import static
+from django.conf import settings
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -39,4 +42,6 @@ urlpatterns = [
     path('chat/init/', ChatInitView.as_view(), name='chat-init'),
     path('api/link_telegram/', LinkTelegramAccount.as_view(), name='link_telegram_account'),
     path('upload/', MediaUploadView.as_view(), name='file-upload'),
-]
+    path('media/', MediaListView.as_view(), name='media-list'),
+    path('media/<int:pk>/', MediaRetrieveView.as_view(), name='media-detail'),
+] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
