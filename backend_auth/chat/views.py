@@ -13,7 +13,7 @@ import requests
 
 
 def send_message_to_ticket(user, message_text, ticket_id, token):
-    url = "http://localhost:8000/messages/create/"
+    url = "http://localhost:30183/messages/create/"
     headers = {
         "Authorization": f"Bearer {token}",
         "Content-Type": "application/json"
