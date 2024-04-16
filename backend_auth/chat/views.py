@@ -1,11 +1,33 @@
+import requests
 from django.http import JsonResponse
 from rest_framework import status
 from rest_framework.views import APIView
 from rest_framework_simplejwt.authentication import JWTAuthentication
 from rest_framework_simplejwt.exceptions import InvalidToken, TokenError
 from openai import OpenAI
+from django.core.cache import cache
 
 from backend_auth.models import Ticket
+
+import requests
+
+
+def send_message_to_ticket(user, message_text, ticket_id, token):
+    url = "http://localhost:8000/messages/create/"
+    headers = {
+        "Authorization": f"Bearer {token}",
+        "Content-Type": "application/json"
+    }
+    data = {
+        "ticket": ticket_id,
+        "text": message_text,
+        "author": user.id
+    }
+    response = requests.post(url, headers=headers, json=data)
+    if response.status_code == 201:
+        return {"message": "Message successfully created", "data": response.json()}
+    else:
+        return {"error": "Failed to create message", "status_code": response.status_code, "details": response.text}
 
 
 class ChatInitView(APIView):
@@ -32,11 +54,24 @@ class ChatInitView(APIView):
             return JsonResponse({'error': 'User not authenticated'}, status=status.HTTP_401_UNAUTHORIZED)
 
         user_input = request.data.get('message')
+        token = request.headers.get('Authorization', '').split('Bearer ')[
+            -1] if 'Authorization' in request.headers else None
+        active_ticket_id = cache.get(f"user_{request.user.id}_active_ticket")
+        if active_ticket_id:
+            response = send_message_to_ticket(request.user, user_input, active_ticket_id, token)
+            return JsonResponse(response, status=status.HTTP_200_OK)
+
         if not user_input:
             return JsonResponse({'error': 'Message content is required'}, status=status.HTTP_400_BAD_REQUEST)
 
-        if user_input.lower() == "оператор":
-            ticket = Ticket.objects.create(user=request.user)
+        if user_input.lower().startswith("оператор"):
+            ticket = Ticket.objects.create(
+                user=request.user,
+                title="Chat Operator Called",
+                description="The user has requested to speak with a chat operator."
+            )
+            cache.set(f"user_{request.user.id}_active_ticket", ticket.id, timeout=3600)  # активировать на час
+
             return JsonResponse(
                 {'message': f'Ticket {ticket.id} created successfully. A support staff will be with you shortly.'},
                 status=status.HTTP_201_CREATED)

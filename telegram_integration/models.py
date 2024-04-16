@@ -3,6 +3,7 @@ from django.contrib.auth.models import User
 from django.utils import timezone
 import uuid
 
+
 class TelegramLink(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     telegram_chat_id = models.CharField(max_length=255, blank=True, null=True)

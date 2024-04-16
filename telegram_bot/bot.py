@@ -1,3 +1,4 @@
+import requests
 import telebot
 import psycopg2
 from datetime import datetime, timedelta
@@ -29,25 +30,13 @@ def send_welcome(message):
     args = message.text.split(maxsplit=1)
     if len(args) > 1:
         code = args[1]
-        try:
-            cursor.execute("SELECT * FROM telegram_integration_telegramlink WHERE confirmation_code = %s", (code,))
-            data = cursor.fetchone()
-            if data:
-                if data[4] + timedelta(minutes=10) > datetime.now():
-                    cursor.execute(
-                        "UPDATE telegram_integration_telegramlink SET telegram_chat_id = %s WHERE confirmation_code = %s",
-                        (message.chat.id, code))
-                    conn.commit()
-                    bot.reply_to(message, "Ваш аккаунт успешно привязан!")
-                else:
-                    bot.reply_to(message, "Код привязки истек.")
-            else:
-                bot.reply_to(message, "Неверный код привязки.")
-        except Exception as e:
-            print(e)
-            bot.reply_to(message, "Ошибка при проверке кода.")
+        api_url = 'http://localhost:8000/api/link_telegram/'
+        response = requests.post(api_url, json={'code': code, 'chat_id': message.chat.id})
+        if response.status_code == 200:
+            bot.reply_to(message, "Your account has been successfully linked.")
+        else:
+            bot.reply_to(message, response.json().get('error', 'An error occurred during account linking.'))
     else:
-        bot.reply_to(message, "Пожалуйста, отправьте команду в формате: /start ваш_код")
-
+        bot.reply_to(message, "Please send the command in format: /start your_code")
 
 bot.infinity_polling()

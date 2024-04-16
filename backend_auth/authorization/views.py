@@ -15,7 +15,7 @@ class RegisterView(APIView):
         username = request.data.get('username')
         password = request.data.get('password')
         email = request.data.get('email')
-        role_name = request.data.get('role', 'user')  # По умолчанию роль 'user'
+        role_name = request.data.get('role', 'user')
 
         if not username or not password or not email:
             return Response({'error': 'Все поля обязательны'}, status=status.HTTP_400_BAD_REQUEST)
@@ -24,10 +24,12 @@ class RegisterView(APIView):
             return Response({'error': 'Пользователь с таким именем уже существует'}, status=status.HTTP_409_CONFLICT)
 
         user = User.objects.create(username=username, email=email, password=make_password(password))
-        role, _ = Role.objects.get_or_create(name=role_name)
-        UserProfile.objects.create(user=user, role=role)
-        return Response({'message': 'Пользователь успешно создан'}, status=status.HTTP_201_CREATED)
 
+        role, created = Role.objects.get_or_create(name=role_name)
+
+        UserProfile.objects.create(user=user, role=role)
+
+        return Response({'message': 'Пользователь успешно создан'}, status=status.HTTP_201_CREATED)
 
 class LoginView(APIView):
     permission_classes = [permissions.AllowAny]

@@ -3,6 +3,10 @@ from .models import TelegramLink
 from django.utils import timezone
 from rest_framework_simplejwt.authentication import JWTAuthentication
 from rest_framework_simplejwt.exceptions import InvalidToken, TokenError
+from rest_framework.views import APIView
+from rest_framework.permissions import AllowAny
+from rest_framework.response import Response
+from rest_framework import status
 
 
 def generate_telegram_link(request):
@@ -33,3 +37,31 @@ def generate_telegram_link(request):
         print("Authentication Failed: User not authenticated")
         return JsonResponse({'error': 'User not authenticated'}, status=401)
 
+
+class LinkTelegramAccount(APIView):
+    permission_classes = [AllowAny]
+
+    def post(self, request):
+        code = request.data.get("code")
+        chat_id = request.data.get("chat_id")
+        if not code or not chat_id:
+            return Response({"error": "Code and chat_id are required"}, status=status.HTTP_400_BAD_REQUEST)
+
+        try:
+            link = TelegramLink.objects.get(confirmation_code=code)
+            if link.telegram_chat_id:
+                return Response({"error": "This user has already linked a Telegram account."},
+                                status=status.HTTP_400_BAD_REQUEST)
+
+            if not link.is_confirmation_code_expired():
+                if TelegramLink.objects.filter(telegram_chat_id=chat_id).exists():
+                    return Response({"error": "This Telegram account is already linked to another user."},
+                                    status=status.HTTP_400_BAD_REQUEST)
+
+                link.telegram_chat_id = chat_id
+                link.save()
+                return Response({"message": "Account successfully linked"}, status=status.HTTP_200_OK)
+            else:
+                return Response({"error": "Code expired"}, status=status.HTTP_400_BAD_REQUEST)
+        except TelegramLink.DoesNotExist:
+            return Response({"error": "Invalid code"}, status=status.HTTP_404_NOT_FOUND)

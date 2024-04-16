@@ -14,7 +14,14 @@ class TicketSerializer(serializers.ModelSerializer):
 
 
 class MessageSerializer(serializers.ModelSerializer):
+    author = serializers.HiddenField(default=serializers.CurrentUserDefault())
+    role = serializers.SerializerMethodField()
+
     class Meta:
         model = Message
-        fields = ['id', 'ticket', 'text', 'timestamp', 'author']
-        read_only_fields = ['author']
+        fields = ['id', 'ticket', 'text', 'timestamp', 'author', 'role']
+
+    def get_role(self, obj):
+        if hasattr(obj.author, 'profile'):
+            return obj.author.profile.role.name
+        return None

@@ -2,6 +2,11 @@ from rest_framework import generics, permissions
 from backend_auth.models import Ticket, Message
 from backend_auth.serializers import TicketSerializer, MessageSerializer
 from backend_auth.permissions import IsOwnerOrIsSupportStaff
+from telegram_integration.models import TelegramLink
+import telebot
+
+TOKEN = '7046099150:AAE39SRoCZ6NzOS0cQs-UbC2S7p2J03J3mA'
+bot = telebot.TeleBot(TOKEN)
 
 
 class TicketListView(generics.ListAPIView):
@@ -37,12 +42,21 @@ class MessageCreateView(generics.CreateAPIView):
 
     def perform_create(self, serializer):
         message = serializer.save(author=self.request.user)
+        ticket = message.ticket
 
         if self.request.user.profile.role.name == 'support':
-            ticket = message.ticket
             ticket.status = 'pending'
             ticket.save()
 
+            try:
+                telegram_link = TelegramLink.objects.get(user=ticket.user)
+                if telegram_link and telegram_link.telegram_chat_id:
+                    message_text = f"На ваш тикет №{ticket.id} поступил ответ от техподдержки."
+                    bot.send_message(chat_id=telegram_link.telegram_chat_id, text=message_text)
+            except TelegramLink.DoesNotExist:
+                print(f"No Telegram link found for user {ticket.user.username}")
+            except Exception as e:
+                print(f"Failed to send Telegram message: {str(e)}")
 
 
 class MessageListView(generics.ListAPIView):
