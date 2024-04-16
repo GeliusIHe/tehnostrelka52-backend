@@ -61,13 +61,20 @@ class MessageCreateView(generics.CreateAPIView):
                 print(f"Failed to send Telegram message: {str(e)}")
 
 
-class MessageListView(generics.ListAPIView):
-    serializer_class = MessageSerializer
-    permission_classes = [permissions.IsAuthenticated, IsOwnerOrIsSupportStaff]
+class MediaListView(generics.ListAPIView):
+    serializer_class = MediaSerializer
+    permission_classes = [IsAuthenticated, IsOwnerOrIsSupportStaff]
 
     def get_queryset(self):
-        ticket_id = self.kwargs.get('ticket_id')
-        return Message.objects.filter(ticket_id=ticket_id)
+        if hasattr(self.request.user, 'profile') and self.request.user.profile.role.name == 'support':
+            return Media.objects.all()
+        return Media.objects.filter(message__author=self.request.user)
+
+
+class MediaRetrieveView(generics.RetrieveAPIView):
+    queryset = Media.objects.all()
+    serializer_class = MediaSerializer
+    permission_classes = [IsAuthenticated, IsOwnerOrIsSupportStaff]
 
 
 class MediaUploadView(generics.CreateAPIView):

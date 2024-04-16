@@ -34,15 +34,3 @@ class MediaSerializer(serializers.ModelSerializer):
     class Meta:
         model = Media
         fields = ['id', 'file', 'message', 'uploaded_at']
-
-
-class MediaListView(generics.ListAPIView):
-    queryset = Media.objects.all()
-    serializer_class = MediaSerializer
-    permission_classes = [IsAuthenticated]
-
-
-class MediaRetrieveView(generics.RetrieveAPIView):
-    queryset = Media.objects.all()
-    serializer_class = MediaSerializer
-    permission_classes = [IsAuthenticated]
