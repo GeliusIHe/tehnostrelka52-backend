@@ -79,6 +79,11 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
+CSRF_TRUSTED_ORIGINS = [
+    'https://ts.geliusihe.ru',
+]
+
+
 CORS_ALLOW_ALL_ORIGINS = True
 ROOT_URLCONF = 'main_backend.urls'
 
