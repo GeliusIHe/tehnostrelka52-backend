@@ -13,6 +13,12 @@ import os
 from pathlib import Path
 from datetime import timedelta
 
+from dotenv import load_dotenv
+
+load_dotenv()
+
+TOKEN = os.getenv('TOKEN')
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -56,16 +62,6 @@ SIMPLE_JWT = {
     'REFRESH_TOKEN_LIFETIME': timedelta(days=1),  # Пример для refresh токена
     'ROTATE_REFRESH_TOKENS': False,
     'BLACKLIST_AFTER_ROTATION': True,
-}
-
-
-CHANNEL_LAYERS = {
-    'default': {
-        'BACKEND': 'channels_redis.core.RedisChannelLayer',
-        'CONFIG': {
-            "hosts": [('109.107.182.70', 6379, 'geliusihe')],
-        },
-    },
 }
 
 MIDDLEWARE = [
@@ -112,11 +108,11 @@ WSGI_APPLICATION = 'main_backend.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'postgres',  # Имя вашей базы данных
-        'USER': 'postgres',  # Имя пользователя базы данных
-        'PASSWORD': 'SD1jkHSKDAD',  # Пароль для доступа к базе данных
-        'HOST': '109.107.182.70',  # Адрес сервера базы данных (или IP-адрес)
-        'PORT': '5432',  # Порт, на котором работает сервер базы данных
+        'NAME': os.getenv('DB_NAME'),
+        'USER': os.getenv('DB_USER'),
+        'PASSWORD': os.getenv('DB_PASSWORD'),
+        'HOST': os.getenv('DB_HOST'),
+        'PORT': os.getenv('DB_PORT')
     }
 }
 

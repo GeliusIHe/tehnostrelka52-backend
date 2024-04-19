@@ -1,15 +1,19 @@
+import os
+
 import psycopg2
 import requests
 import telebot
+from dotenv import load_dotenv
+load_dotenv()
 
-TOKEN = '7046099150:AAE39SRoCZ6NzOS0cQs-UbC2S7p2J03J3mA'
+TOKEN = os.getenv('TG_TOKEN')
 
 DATABASE = {
-    'NAME': 'postgres',
-    'USER': 'postgres',
-    'PASSWORD': 'SD1jkHSKDAD',
-    'HOST': '109.107.182.70',
-    'PORT': '5432'
+    'NAME': os.getenv('DB_NAME'),
+    'USER': os.getenv('DB_USER'),
+    'PASSWORD': os.getenv('DB_PASSWORD'),
+    'HOST': os.getenv('DB_HOST'),
+    'PORT': os.getenv('DB_PORT')
 }
 
 conn = psycopg2.connect(
@@ -22,7 +26,6 @@ conn = psycopg2.connect(
 cursor = conn.cursor()
 
 bot = telebot.TeleBot(TOKEN)
-
 
 @bot.message_handler(commands=['start'])
 def send_welcome(message):
